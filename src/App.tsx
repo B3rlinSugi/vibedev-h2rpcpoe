@@ -23,7 +23,7 @@ function App() {
         initial={{ opacity: 0, y: 40, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="glass-panel w-full max-w-2xl mx-auto"
+        className="glass-panel w-full max-w-2xl p-6 sm:p-10 mx-auto"
       >
         <header className="text-center mb-10">
           <h1 className="text-4xl font-bold font-serif text-textMain flex items-center justify-center gap-3 tracking-tight">
