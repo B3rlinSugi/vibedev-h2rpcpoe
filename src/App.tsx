@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { BookOpen, Calendar, Target, CalendarDays, CheckCircle2, AlertTriangle, TrendingUp, ChevronDown, ChevronUp, BookMarked, Bookmark } from 'lucide-react';
 import './index.css';
 
 function App() {
@@ -7,8 +8,12 @@ function App() {
   const [targetDate, setTargetDate] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
   const [showOptional, setShowOptional] = useState<boolean>(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Set today's date formatted for min attribute
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const todayStr = useMemo(() => {
     const today = new Date();
     const offset = today.getTimezoneOffset();
@@ -16,7 +21,7 @@ function App() {
     return localDate.toISOString().split('T')[0];
   }, []);
 
-  const calculateResults = () => {
+  const results = useMemo(() => {
     if (!totalPages || pagesRead === '' || !targetDate) return null;
 
     const total = Number(totalPages);
@@ -32,7 +37,7 @@ function App() {
     const diffTime = target.getTime() - today.getTime();
     const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (daysRemaining <= 0) return null; 
+    if (daysRemaining <= 0) return null;
 
     const pagesRemaining = total - read;
     const requiredPace = Math.ceil(pagesRemaining / daysRemaining);
@@ -40,6 +45,7 @@ function App() {
 
     let paceStatus = null;
     let paceMessage = '';
+    let statusIcon = null;
 
     if (startDate) {
       const start = new Date(startDate);
@@ -54,13 +60,16 @@ function App() {
 
         if (read > expectedPagesRead) {
           paceStatus = 'ahead';
-          paceMessage = `You're ahead of pace! You only needed to read ${expectedPagesRead} pages by today.`;
+          paceMessage = `Incredible pace! You only needed to be on page ${expectedPagesRead} by today.`;
+          statusIcon = <TrendingUp size={20} color="var(--success-color)" />;
         } else if (read < expectedPagesRead) {
           paceStatus = 'behind';
-          paceMessage = `You're a bit behind. You should be on page ${expectedPagesRead} to stay on track.`;
+          paceMessage = `Falling slightly behind. Aim to reach page ${expectedPagesRead} to get back on track.`;
+          statusIcon = <AlertTriangle size={20} color="var(--warning-color)" />;
         } else {
           paceStatus = 'on-track';
-          paceMessage = `Perfectly on track! Keep it up.`;
+          paceMessage = `Perfectly timed! You're exactly where you need to be.`;
+          statusIcon = <CheckCircle2 size={20} color="#4682B4" />;
         }
       }
     }
@@ -71,122 +80,156 @@ function App() {
       requiredPace,
       progress,
       paceStatus,
-      paceMessage
+      paceMessage,
+      statusIcon
     };
-  };
+  }, [totalPages, pagesRead, targetDate, startDate]);
 
-  const results = calculateResults();
+  if (!mounted) return null;
 
   return (
-    <div className="app-container">
-      <header className="header">
-        <h1>📚 Reading Nook</h1>
-        <p>Track your reading pace and hit your deadline.</p>
-      </header>
+    <>
+      <div className="decoration deco-1">
+        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="rgba(210, 105, 30, 0.25)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+      </div>
+      <div className="decoration deco-2">
+        <svg width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="rgba(139, 69, 19, 0.15)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
 
-      <main>
-        <div className="form-group">
-          <label htmlFor="totalPages">Total pages in book</label>
-          <input
-            id="totalPages"
-            type="number"
-            min="1"
-            value={totalPages}
-            onChange={(e) => setTotalPages(e.target.value ? Number(e.target.value) : '')}
-            placeholder="e.g. 350"
-          />
-        </div>
+      <div className="app-container">
+        <header className="header">
+          <h1>
+            <BookMarked size={36} color="var(--accent-color)" strokeWidth={1.5} />
+            Reading Nook
+          </h1>
+          <p>Curate your reading pace. Master your deadlines.</p>
+        </header>
 
-        <div className="form-group">
-          <label htmlFor="pagesRead">Pages read so far</label>
-          <input
-            id="pagesRead"
-            type="number"
-            min="0"
-            max={totalPages || undefined}
-            value={pagesRead}
-            onChange={(e) => setPagesRead(e.target.value !== '' ? Number(e.target.value) : '')}
-            placeholder="e.g. 50"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="targetDate">Target finish date</label>
-          <input
-            id="targetDate"
-            type="date"
-            min={todayStr}
-            value={targetDate}
-            onChange={(e) => setTargetDate(e.target.value)}
-          />
-        </div>
-
-        <button 
-          className="optional-toggle"
-          onClick={() => setShowOptional(!showOptional)}
-        >
-          {showOptional ? '- Hide optional start date' : '+ Add optional start date for pace tracking'}
-        </button>
-
-        {showOptional && (
-          <div className="form-group">
-            <label htmlFor="startDate">Start date (Optional)</label>
-            <input
-              id="startDate"
-              type="date"
-              max={todayStr}
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </div>
-        )}
-
-        {results && (
-          <div className="results-card">
-            <div className="results-grid">
-              <div className="stat-box">
-                <div className="label">Pages Left</div>
-                <div className="value">{results.pagesRemaining}</div>
-              </div>
-              <div className="stat-box">
-                <div className="label">Days Left</div>
-                <div className="value">{results.daysRemaining}</div>
-              </div>
-              <div className="stat-box" style={{ gridColumn: '1 / -1' }}>
-                <div className="label">Required Daily Pace</div>
-                <div className="value">{results.requiredPace} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>pages/day</span></div>
+        <main>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="totalPages">Total Pages</label>
+              <div className="input-wrapper">
+                <input
+                  id="totalPages"
+                  type="number"
+                  min="1"
+                  value={totalPages}
+                  onChange={(e) => setTotalPages(e.target.value ? Number(e.target.value) : '')}
+                  placeholder="e.g. 350"
+                />
+                <BookOpen className="input-icon" size={20} />
               </div>
             </div>
 
-            <div className="progress-container">
-              <div className="progress-label">
-                <span>Progress</span>
-                <span>{Math.round(results.progress)}%</span>
-              </div>
-              <div className="progress-bar-bg">
-                <div 
-                  className="progress-bar-fill" 
-                  style={{ width: `${results.progress}%` }}
-                ></div>
+            <div className="form-group">
+              <label htmlFor="pagesRead">Pages Read</label>
+              <div className="input-wrapper">
+                <input
+                  id="pagesRead"
+                  type="number"
+                  min="0"
+                  max={totalPages || undefined}
+                  value={pagesRead}
+                  onChange={(e) => setPagesRead(e.target.value !== '' ? Number(e.target.value) : '')}
+                  placeholder="e.g. 50"
+                />
+                <Bookmark className="input-icon" size={20} />
               </div>
             </div>
 
-            {results.paceStatus && (
-              <div className={`status-indicator ${results.paceStatus}`}>
-                <span className="status-icon">
-                  {results.paceStatus === 'ahead' ? '🎉' : results.paceStatus === 'behind' ? '⚠️' : '✅'}
-                </span>
-                <span>{results.paceMessage}</span>
+            <div className="form-group full">
+              <label htmlFor="targetDate">Target Finish Date</label>
+              <div className="input-wrapper">
+                <input
+                  id="targetDate"
+                  type="date"
+                  min={todayStr}
+                  value={targetDate}
+                  onChange={(e) => setTargetDate(e.target.value)}
+                />
+                <Target className="input-icon" size={20} />
+              </div>
+            </div>
+
+            <button 
+              className="optional-toggle"
+              onClick={() => setShowOptional(!showOptional)}
+            >
+              {showOptional ? (
+                <><ChevronUp size={16} /> Hide pacing settings</>
+              ) : (
+                <><ChevronDown size={16} /> Add start date for intelligent pacing</>
+              )}
+            </button>
+
+            {showOptional && (
+              <div className="form-group full" style={{ animation: 'slideUp 0.3s ease-out' }}>
+                <label htmlFor="startDate">When did you start reading?</label>
+                <div className="input-wrapper">
+                  <input
+                    id="startDate"
+                    type="date"
+                    max={todayStr}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                  <CalendarDays className="input-icon" size={20} />
+                </div>
+              </div>
+            )}
+
+            {results && (
+              <div className="results-card">
+                <div className="results-grid">
+                  <div className="stat-box">
+                    <div className="label">Remaining</div>
+                    <div className="value">{results.pagesRemaining}</div>
+                    <div className="unit">pages</div>
+                  </div>
+                  <div className="stat-box">
+                    <div className="label">Time Left</div>
+                    <div className="value">{results.daysRemaining}</div>
+                    <div className="unit">days</div>
+                  </div>
+                  <div className="stat-box">
+                    <div className="label">Required Pace</div>
+                    <div className="value">{results.requiredPace}</div>
+                    <div className="unit">pages / day</div>
+                  </div>
+                </div>
+
+                <div className="progress-section">
+                  <div className="progress-label">
+                    <div className="progress-title">
+                      Journey Progress
+                    </div>
+                    <div className="progress-percent">
+                      {Math.round(results.progress)}%
+                    </div>
+                  </div>
+                  <div className="progress-track">
+                    <div 
+                      className="progress-fill" 
+                      style={{ width: `${results.progress}%` }}
+                    />
+                  </div>
+                </div>
+
+                {results.paceStatus && (
+                  <div className={`status-indicator ${results.paceStatus}`}>
+                    <div className="status-icon">
+                      {results.statusIcon}
+                    </div>
+                    <span>{results.paceMessage}</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
-
-        <div className="bookshelf-motif">
-          📖 ☕ 🪴 📚 🕯️
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
 
