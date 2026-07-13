@@ -1,75 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 @import "tailwindcss";
-
 @theme {
-  --font-sans: "Plus Jakarta Sans", sans-serif;
-  --font-serif: "Playfair Display", serif;
-  --animate-shimmer: shimmer 2s infinite linear;
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-  --color-background: #FAF6F0;
-  --color-card: #FFFFFF;
-  --color-textMain: #2C1810;
-  --color-textMuted: #6B5D54;
-  --color-accent: #D2691E;
-  --color-accentGlow: rgba(210, 105, 30, 0.2);
-  --color-success: #2E8B57;
-  --color-warning: #CD853F;
-  --color-error: #D32F2F;
+--font-sans:"Plus Jakarta Sans",sans-serif;
+--font-serif:"Playfair Display",serif;
+--animate-shimmer:shimmer 2s infinite linear;
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+--color-background:#FAF6F0;
+--color-card:#FFFFFF;
+--color-textMain:#2C1810;
+--color-textMuted:#6B5D54;
+--color-accent:#D2691E;
+--color-accentGlow:rgba(210,105,30,0.2);
+--color-success:#2E8B57;
+--color-warning:#CD853F;
+--color-error:#D32F2F;
 }
-
-@layer base {
-  body {
-    background-color: var(--color-background);
-    color: var(--color-textMain);
-    background-image: radial-gradient(circle at 15% 50%, rgba(210, 105, 30, 0.08), transparent 40%), radial-gradient(circle at 85% 30%, rgba(139, 69, 19, 0.05), transparent 40%), radial-gradient(circle at 50% 80%, rgba(205, 133, 63, 0.05), transparent 50%);
-    background-attachment: fixed;
-  }
+@layer base{
+body{background-color:var(--color-background);color:var(--color-textMain);background-image:radial-gradient(circle at 15% 50%,rgba(210,105,30,0.08),transparent 40%),radial-gradient(circle at 85% 30%,rgba(139,69,19,0.05),transparent 40%),radial-gradient(circle at 50% 80%,rgba(205,133,63,0.05),transparent 50%);background-attachment:fixed;}
 }
-
-@layer components {
-  .glass-panel {
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(255,255,255,0.8);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-    border-radius: 1.5rem;
-    position: relative;
-    z-index: 10;
-    overflow: hidden;
-  }
-  .input-field {
-    width: 100%;
-    padding: .75rem 1rem .75rem 3rem;
-    border: 2px solid rgba(255,255,255,0.5);
-    border-radius: .75rem;
-    background: rgba(255,255,255,0.5);
-    color: var(--color-textMain);
-    font-weight: 500;
-    transition: all .3s;
-  }
-  .input-field:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    background: #fff;
-    transform: translateY(-2px);
-  }
-  .stat-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-    background: rgba(255,255,255,0.5);
-    border: 1px solid rgba(255,255,255,0.6);
-    border-radius: 1rem;
-    transition: all .3s;
-    text-align: center;
-  }
-  .stat-card:hover {
-    transform: translateY(-4px);
-    background: #fff;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  }
+@layer components{
+.glass-panel{background:rgba(255,255,255,0.6);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.8);box-shadow:0 20px 40px rgba(0,0,0,0.05);border-radius:1.5rem;position:relative;z-index:10;overflow:hidden;}
+.input-field{width:100%;padding:.75rem 1rem .75rem 3rem;border:2px solid rgba(255,255,255,0.5);border-radius:.75rem;background:rgba(255,255,255,0.5);color:var(--color-textMain);font-weight:500;transition:all .3s;}
+.input-field:focus{outline:0;border-color:var(--color-accent);background:#fff;transform:translateY(-2px);}
+.stat-card{display:flex;flex-direction:column;align-items:center;padding:1rem;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.6);border-radius:1rem;transition:all .3s;text-align:center;}
+.stat-card:hover{transform:translateY(-4px);background:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.08);}
 }
