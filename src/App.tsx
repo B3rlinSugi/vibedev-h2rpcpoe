@@ -17,8 +17,6 @@ function App() {
       <Confetti active={results?.isComplete || false} />
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-60">
-        <svg className="absolute top-[-5%] right-[-5%] animate-float" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="rgba(210, 105, 30, 0.25)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
-        <svg className="absolute bottom-[-5%] left-[-5%] animate-float" style={{ animationDirection: 'reverse', animationDuration: '8s' }} width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="rgba(139, 69, 19, 0.15)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
       </div>
 
       <motion.div 
